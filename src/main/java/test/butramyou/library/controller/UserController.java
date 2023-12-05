@@ -19,7 +19,7 @@ public class UserController {
 
     @GetMapping()
     public ResponseEntity<List<User>> listUsers() {
-        List<User> users = userService.listUsers();
+        List<User> users = userService.getAllBooks();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
