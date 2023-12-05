@@ -6,11 +6,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
 import test.butramyou.library.entity.Book;
+import test.butramyou.library.entity.Borrowed;
 import test.butramyou.library.entity.User;
 import test.butramyou.library.model.BooksCSVRecord;
+import test.butramyou.library.model.BorrowedCSVRecord;
 import test.butramyou.library.model.GenderType;
 import test.butramyou.library.model.UserCSVRecord;
 import test.butramyou.library.repositories.BookRepository;
+import test.butramyou.library.repositories.BorrowedRepository;
 import test.butramyou.library.repositories.UserRepository;
 import test.butramyou.library.services.CsvService;
 
@@ -25,14 +28,14 @@ public class BootstrapData implements CommandLineRunner {
     private final CsvService csvService;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
-//    private final BorrowedRepository borrowedRepository;
+    private final BorrowedRepository borrowedRepository;
 
     @Transactional
     @Override
     public void run(String... args) throws Exception {
         loadUserCsvData();
         loadBookCsvData();
-        List<Book> books = bookRepository.findAll();
+        loadBorrowedCsvData();
     }
 
     private void loadUserCsvData() throws FileNotFoundException {
@@ -69,6 +72,35 @@ public class BootstrapData implements CommandLineRunner {
                         .author(booksCSVRecord.getAuthor())
                         .genre(booksCSVRecord.getGenre())
                         .publisher(booksCSVRecord.getPublisher())
+                        .build());
+            });
+        }
+    }
+
+    private void loadBorrowedCsvData() throws FileNotFoundException {
+        if (borrowedRepository.count() == 0) {
+            File file = ResourceUtils.getFile("classpath:csvdata/borrowed.csv");
+            List<BorrowedCSVRecord> borrowedCSVRecords = csvService.convertBorrowedCSV(file);
+
+            List<User> users = userRepository.findAll();
+            List<Book> books = bookRepository.findAll();
+
+            borrowedCSVRecords.forEach(borrowedCSVRecord -> {
+                Book borrowedBook = books.stream().filter(book -> book.getTitle().equals(borrowedCSVRecord.getBookTitle()))
+                        .findFirst()
+                        .orElseThrow(() -> new RuntimeException(String.format("There is no book in the library with the title: %s", borrowedCSVRecord.getBookTitle())));
+
+                String[] borrower = borrowedCSVRecord.getBorrower().split(",");
+
+                User userBorrower = users.stream().filter(user -> user.getSurname().equals(borrower[0]) && user.getFirstName().equals(borrower[1]))
+                        .findFirst()
+                        .orElseThrow(() -> new RuntimeException(String.format("There is no user with name: %s", borrowedCSVRecord.getBorrower())));
+
+                borrowedRepository.save(Borrowed.builder()
+                        .book(borrowedBook)
+                        .user(userBorrower)
+                        .borrowDate(borrowedCSVRecord.getBorrowDate())
+                        .returnDate(borrowedCSVRecord.getReturnDate())
                         .build());
             });
         }

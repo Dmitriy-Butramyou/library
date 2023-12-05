@@ -16,11 +16,11 @@ public class BorrowedCSVRecord {
     @CsvBindByName(column = "Borrower", required = true)
     private String borrower;
     @CsvBindByName(column = "Book", required = true)
-    private String book;
+    private String bookTitle;
     @CsvDate(value = "MM/dd/yyyy")
     @CsvBindByName(column = "borrowed from")
-    private LocalDate borrowedFrom;
+    private LocalDate borrowDate;
     @CsvDate(value = "MM/dd/yyyy")
     @CsvBindByName(column = "borrowed to")
-    private LocalDate borrowedTo;
+    private LocalDate returnDate;
 }

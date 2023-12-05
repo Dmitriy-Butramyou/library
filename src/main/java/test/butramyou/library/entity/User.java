@@ -7,6 +7,7 @@ import lombok.*;
 import test.butramyou.library.model.GenderType;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -31,4 +32,7 @@ public class User {
     private LocalDate memberSince;
     private LocalDate memberTill;
     private GenderType gender;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Borrowed> borrowings;
 }

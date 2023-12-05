@@ -1,13 +1,11 @@
 package test.butramyou.library.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -30,4 +28,7 @@ public class Book {
     private String author;
     private String genre;
     private String publisher;
+
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
+    private List<Borrowed> borrowings;
 }
