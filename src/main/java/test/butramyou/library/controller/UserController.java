@@ -23,6 +23,18 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
+    @GetMapping("/borrowed-books")
+    public ResponseEntity<List<User>> getUsersWithBorrowedBooks() {
+        List<User> users = userService.getUsersWithBorrowedBooks();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/non-terminated-no-borrowings")
+    public ResponseEntity<List<User>> getNonTerminatedUsersWithNoCurrentBorrowings() {
+        List<User> users = userService.getNonTerminatedUsersWithNoCurrentBorrowings();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
     @GetMapping("/{userId}")
     public ResponseEntity<HttpStatus> getUserById(@PathVariable("userId") UUID userId) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);

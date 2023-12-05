@@ -7,4 +7,8 @@ import java.util.List;
 public interface UserService {
 
     List<User> getAllBooks();
+
+    List<User> getUsersWithBorrowedBooks();
+
+    List<User> getNonTerminatedUsersWithNoCurrentBorrowings();
 }

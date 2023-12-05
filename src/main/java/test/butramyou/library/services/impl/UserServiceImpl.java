@@ -18,4 +18,14 @@ public class UserServiceImpl implements UserService {
     public List<User> getAllBooks() {
         return userRepository.findAll();
     }
+
+    @Override
+    public List<User> getUsersWithBorrowedBooks() {
+        return userRepository.getUsersWithBorrowedBooks();
+    }
+
+    @Override
+    public List<User> getNonTerminatedUsersWithNoCurrentBorrowings() {
+        return userRepository.getNonTerminatedUsersWithNoCurrentBorrowings();
+    }
 }
